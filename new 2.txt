@@ -1,0 +1,2 @@
+command
+select curdate(),curdate()+interval 2 quarter,date_format(curdate()+interval 2 quarter,'%W'),date_format(curdate()+interval 2 quarter +interval 5 day,'%W') ,curdate()+interval 2 quarter,date_format(curdate()+interval 2 quarter + interval 6 day,'%e') ;
