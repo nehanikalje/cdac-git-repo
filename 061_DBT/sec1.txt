@@ -1,0 +1,122 @@
+select * from emp;
+
+
+1.	Display employee information in ascending order of Month Name of hiredate.
+      @ select ename,job,mgr,hiredate,month(hiredate)R2 from emp order by month(hiredate);
+
+2.	Write a query to fetch ALTERNATE records from a EMP table.  (ODD Numbered Record).
+      @ select * from emp group by empno having mod(empno,2) =1;
+
+
+3.	Calculate the avg, min and max salary of those groups of employees having the job as CLERK or MANAGER.
+
+        @ select job,avg(sal) , min(sal) , max(sal),job from emp group by job having job in ('clerk','manager');
+
+
+
+4.	Display the name of job where least number of persons are working.
+     
+      @ select count(*),job from emp group by job limit 4,1;
+
+
+5.	Write an SQL command that displays 2nd lowest salary paid.
+       @ select sal from emp order by sal limit 1 offset 1;
+
+
+
+6.	Write a query to display ename, job, sal and comm, if the comm is null then display “No commission”
+        @ select ename , job, sal, ifnull(comm,"No commision") as "comm" from emp;
+
+.
+7.	Find department-wise average salary where more than three employees are working.
+       @ select avg(sal),count(*),deptno from emp group by deptno having count(*)>3;
+
+
+
+8.	Display all employees whose salary is more than 'ADAMS' salary.
+        @ select ename,sal from emp having sal >(select sal from emp where ename='adams');
+
+
+9.	Display all employees whose salary > lowest salary and sal < highest salary of all employees.
+      @ select ename,sal from emp having sal>(select min(sal) from emp) and sal<(select max(sal) from emp);
+
+
+10.	Display in which year max employee have joined.
+      @ select ename,hiredate from emp where year(hiredate)=1981;
+
+
+
+section 2
+
+Q1 Write a procedure the print all employee details using cursors.
+
+
+DROP PROCEDURE IF EXISTS getemp;
+delimiter $$
+CREATE PROCEDURE getemp()
+begin
+    declare empID INT;
+    declare ename ,job VARCHAR(45);
+    declare mgr,hiredate,sal,comm, deptno,bonusid INT;
+	declare user_name,pwd VARCHAR(50);
+    declare phone INT;
+	declare isActive INT;
+    declare c1 CURSOR FOR SELECT * FROM emp;
+    
+    OPEN c1;
+         lbl: loop
+              FETCH c1 empID ,ename ,job ,mgr ,hiredate ,sal ,comm ,deptno ,bonusid ,pwd ,phone ,isActive;
+              SELECT empID ,ename ,job ,mgr ,hiredate ,sal ,comm ,deptno ,bonusid,pwd ,phone ,isActive;
+         end loop lbl;
+    CLOSE c1;
+end $$
+delimiter ;
+
+
+
+Q2•	Create a new table called STUDENT having following columns (studentID, namefirst, namelast, DOB, and emailID). Write a function names myAutoNumber to return auto generate number and use that number as studentID and insert the value in studentID column. Check if namefirst and namelast is already present in the table, then display a message “Student exists”.
+
+
+
+create table STUDENT(studentID int , firstname varchar(20) ,lastname varchar(20),DOB date,emailID varchar(30));
+
+->Function : 
+Drop function if exists myAutoNumber;
+delimiter $
+CREATE FUNCTION myAutoNumber() returns int
+deterministic 
+begin
+	declare x int ;
+	SET x := (select round(rand()*100));
+	return x;
+end $
+delimiter ;
+
+->Procedure : 
+drop procedure if exists P1;
+delimiter $
+create procedure P1( X int , Fname varchar(20) , Lname varchar(20), d date , mail varchar(30))
+begin 
+	IF (select firstname from student)=Fname && (select lasname from student)=Lname then
+		select “Student already exists” as “Message”;
+	ELSE 
+		insert into table Student(x , fname , lname, d ,mail);
+		select “Value Inserted into table” as “Message”;
+	END IF
+end $
+delimiter ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
